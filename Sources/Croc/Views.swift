@@ -48,7 +48,7 @@ struct ContentView: View {
 
 // MARK: - Hero
 
-/// The dark band at the top: the app, what's in line and the main button.
+/// The band at the top: the app, what's in line and the main button. Light green in light mode, dark in dark mode.
 struct Hero: View {
     @Environment(Converter.self) private var converter
 
@@ -58,30 +58,39 @@ struct Hero: View {
                 .resizable()
                 .frame(width: 40, height: 40)
             VStack(alignment: .leading, spacing: 1) {
-                Text("Croc").font(.display(19)).foregroundStyle(.white)
-                Text(summary).font(.callout).foregroundStyle(Theme.muted).monospacedDigit()
+                Text("Croc").font(.display(19)).foregroundStyle(Hero.title)
+                Text(summary).font(.callout).foregroundStyle(Hero.subtitle).monospacedDigit()
             }
             Spacer()
             if converter.isRunning {
                 Button { converter.stop() } label: { Label("Stop", systemImage: "stop.fill") }
-                    .buttonStyle(PillButtonStyle(large: true))
+                    .buttonStyle(PillButtonStyle(surface: Hero.button, large: true))
             } else {
                 Button { addVideos(to: converter) } label: { Label("Add videos", systemImage: "plus") }
-                    .buttonStyle(PillButtonStyle(large: true))
+                    .buttonStyle(PillButtonStyle(surface: Hero.button, large: true))
                 Button { converter.start() } label: {
                     Label(convertTitle, systemImage: "arrow.down.right.and.arrow.up.left")
                 }
-                .buttonStyle(PillButtonStyle(prominent: true, tint: .white, foreground: Billabong.c950, large: true))
+                .buttonStyle(PillButtonStyle(prominent: true, tint: Hero.convert, foreground: Hero.convertText, large: true))
                 .disabled(converter.waiting.isEmpty)
             }
         }
         .padding(.horizontal, 32)
         .padding(.top, 40)
         .padding(.bottom, 22)
-        .background(LinearGradient(colors: [Billabong.c900, Billabong.c950], startPoint: .top, endPoint: .bottom))
-        .overlay(alignment: .bottom) { Rectangle().fill(.white.opacity(0.08)).frame(height: 1) }
-        .environment(\.colorScheme, .dark)
+        .background(LinearGradient(colors: [Hero.top, Hero.bottom], startPoint: .top, endPoint: .bottom))
+        .overlay(alignment: .bottom) { Rectangle().fill(Hero.border).frame(height: 1) }
     }
+
+    private static let top = Color.adaptive(light: Billabong.c100, dark: Billabong.c900)
+    private static let bottom = Color.adaptive(light: Billabong.c200, dark: Billabong.c950)
+    private static let border = Color.adaptive(light: Billabong.c950.opacity(0.1), dark: .white.opacity(0.08))
+    private static let title = Color.adaptive(light: Billabong.c950, dark: .white)
+    private static let subtitle = Color.adaptive(light: Billabong.c900.opacity(0.7), dark: Billabong.c100.opacity(0.7))
+    private static let button = Color.adaptive(light: .white.opacity(0.6), dark: .white.opacity(0.05))
+    // On the light band a white button looks too much like the others, so the main one is filled green there.
+    private static let convert = Color.adaptive(light: Billabong.c600, dark: .white)
+    private static let convertText = Color.adaptive(light: .white, dark: Billabong.c950)
 
     private var convertTitle: String {
         let count = converter.waiting.count

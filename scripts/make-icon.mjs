@@ -25,7 +25,7 @@ const bear = bearSource
   .replace(/fill="(#[0-9a-f]{6})"/gi, (match, hex) => `fill="${chalk[hex.toLowerCase()] ?? "#606369"}"`);
 
 const defs = `
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c733b"/><stop offset=".55" stop-color="#1c3d25"/><stop offset="1" stop-color="#0c2113"/></linearGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9eedc"/><stop offset=".55" stop-color="#b5ddbb"/><stop offset="1" stop-color="#86c590"/></linearGradient>
     <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
     <linearGradient id="skin" gradientUnits="userSpaceOnUse" x1="0" y1="150" x2="0" y2="520"><stop offset="0" stop-color="#74c77a"/><stop offset="1" stop-color="#2f8448"/></linearGradient>
     <linearGradient id="snout" gradientUnits="userSpaceOnUse" x1="0" y1="318" x2="0" y2="520"><stop offset="0" stop-color="#8fd88f"/><stop offset="1" stop-color="#55a865"/></linearGradient>
@@ -103,7 +103,7 @@ const svg = (viewBox, body) =>
 
 // Rounded square on transparent with a shadow, on the macOS icon grid like the siblings': the app icon, favicon, README.
 const rounded = svg("0 0 1024 1024", `
-  <rect x="100" y="100" width="824" height="824" rx="185" fill="#1c3d25" filter="url(#icon)"/>
+  <rect x="100" y="100" width="824" height="824" rx="185" fill="#b5ddbb" filter="url(#icon)"/>
   <g clip-path="url(#squircle)"><g transform="translate(100 100) scale(0.8047)">${background}${art}</g></g>`);
 // Full-bleed square for the apple-touch-icon (iOS rounds the corners itself).
 const square = svg("0 0 1024 1024", background + art);

@@ -98,6 +98,8 @@ extension View {
 struct PillButtonStyle: ButtonStyle {
     var prominent = false
     var tint: Color = Billabong.c600
+    /// The fill of the non-prominent button.
+    var surface: Color = Theme.card
     var foreground: Color = .white
     var large = false
     @Environment(\.isEnabled) private var isEnabled
@@ -109,7 +111,7 @@ struct PillButtonStyle: ButtonStyle {
             .padding(.horizontal, large ? 18 : 11)
             .padding(.vertical, large ? 9 : 4)
             .foregroundStyle(prominent ? foreground : Theme.link)
-            .background(Capsule().fill(prominent ? tint : Theme.card))
+            .background(Capsule().fill(prominent ? tint : surface))
             .overlay(Capsule().strokeBorder(prominent ? Color.clear : Theme.ring))
             .opacity(isEnabled ? (configuration.isPressed ? 0.75 : 1) : 0.45)
             .contentShape(Capsule())

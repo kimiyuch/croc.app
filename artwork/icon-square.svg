@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c733b"/><stop offset=".55" stop-color="#1c3d25"/><stop offset="1" stop-color="#0c2113"/></linearGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9eedc"/><stop offset=".55" stop-color="#b5ddbb"/><stop offset="1" stop-color="#86c590"/></linearGradient>
     <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
     <linearGradient id="skin" gradientUnits="userSpaceOnUse" x1="0" y1="150" x2="0" y2="520"><stop offset="0" stop-color="#74c77a"/><stop offset="1" stop-color="#2f8448"/></linearGradient>
     <linearGradient id="snout" gradientUnits="userSpaceOnUse" x1="0" y1="318" x2="0" y2="520"><stop offset="0" stop-color="#8fd88f"/><stop offset="1" stop-color="#55a865"/></linearGradient>

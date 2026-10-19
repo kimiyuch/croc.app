@@ -131,7 +131,7 @@ videos for the web, using a bundled ffmpeg. Tagline: *Chew big videos down to si
   | `Theme.swift` | Palette, Figtree, pill buttons |
 
 - **Icon:** `node scripts/make-icon.mjs` (needs Google Chrome) draws a green croc with yellow slit eyes and teeth along
-  its snout. Its paws are on a clapperboard with the kimiyu bear chalked on the board, on a dark green tile.
+  its snout. Its paws are on a clapperboard with the kimiyu bear chalked on the board, on a light green tile (billabong 100–300).
   - It writes `artwork/`, `Resources/icon.png` and `docs/icon.png`.
   - The site images (`croc.web/public/images/croc.png`, `croc.webp` 384 px, `favicon.png` 64 px,
     `public/apple-touch-icon.png` 256 px) and `kimiyu.web/public/images/croc.webp` (256 px) are resized from it with
