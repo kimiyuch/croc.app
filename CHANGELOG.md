@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2 (2026-10-19)
+
+- A lighter green, like croc.kimiyu.ch: the icon's background and, in light mode, the band at the top of the window.
+  The Convert button is green there so it still stands out. Dark mode looks the same as before.
+
 ## 0.1 (2026-10-19)
 
 - **First release.** Drop MOV and MP4 files on Croc and get small copies for the web: Web MP4 (H.264), WebM (VP9)
