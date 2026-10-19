@@ -1,88 +1,196 @@
-# Croc: a video converter for the web (to build)
+# Croc: handoff
 
-Written 2026-10-19 for whoever opens this folder next. Last updated 2026-10-19: app, website and hub card are built and pushed; nothing is released or deployed yet (steps 3–5).
+Written 2026-10-19 at the end of the first Croc session, for the agent on Marcel's other Mac. Read this first, then
+`README.md`.
 
-## What it is
+## Where things stand
 
-A small, native macOS app that turns `.mov` / `.mp4` files into videos fit for the web, using ffmpeg. Drop files on the
-window, pick a preset, get small, fast-starting files back. Tagline idea: *"Chews big videos down to size."*
+Croc (the Mac app), croc.kimiyu.ch (its website) and the Croc card on kimiyu.ch are **built, tested and pushed**.
+**Nothing is released or deployed yet.** The other Mac couldn't deploy: Hostpoint rejects its SSH keys. That's why the
+rest happens on this machine.
 
-Croc is the saltwater crocodile: heavy, and the chomp fits an app that cuts files down. The name is free
-(`kimiyuch/croc.app` and `kimiyuch/croc.web` don't exist yet, checked 2026-10-19).
+| Repo | State | Last commit (2026-10-19) |
+|---|---|---|
+| `kimiyuch/croc.app` | App done, version 0.1 not released | this file |
+| `kimiyuch/croc.web` | Site done, `public/build` committed, not deployed | `f8417f1` Hero heading on two lines |
+| `kimiyuch/kimiyu.web` | Croc card + new OG image committed, not deployed | `e8a573e` Croc's colour: the croc's green instead of olive |
 
-| | |
-|---|---|
-| Repos | `kimiyuch/croc.app` (native app) + `kimiyuch/croc.web` (site), per the `.app` / `.web` suffix rule |
-| Local folders | `Webroot/croc.app`, `Webroot/croc.web`, plus a clone of `Webroot/kimiyu.web` (all 2026-10-19) |
-| Site | `https://croc.kimiyu.ch` on Hostpoint, `https://croc.web.test` in Herd |
-| Bundle ID | `ch.kimiyu.Croc` |
-| Colour | `billabong`: the croc's green (changed from olive on 2026-10-19 at Marcel's request) |
+Marcel says croc.kimiyu.ch is set up on Hostpoint and ready.
 
-## Model it on Wombat
+## What to do, in this order
 
-Copy the structure of `kimiyuch/wombat.app` and `kimiyuch/wombat.web` (both cloned read-only in `/tmp/kimiyu-ref`).
+### 1. Get the code
 
-### croc.app
+```sh
+cd ~/…/Webroot                      # wherever joey.web and wombat.web live on this Mac
+git clone https://github.com/kimiyuch/croc.app.git
+git clone https://github.com/kimiyuch/croc.web.git
+git -C kimiyu.web pull
+```
 
-- **SwiftPM, no Xcode project.** `Package.swift`, `Info.plist`, `build.sh` (ad hoc `codesign --sign -`),
-  `make-dmg.sh`, `release.sh <ver>` + `release.env` (`REPO=kimiyuch/croc.app`), `CHANGELOG.md` with `## 0.1 (date)`.
-  macOS 14+, Apple Silicon.
-- **GPLv3**, like Wombat. That lets us bundle a GPL ffmpeg with libx264/libvpx without trouble.
-- **Fonts / theme:** Figtree in `Resources/Fonts` (+ `OFL.txt`), `Theme.swift` matching croc.kimiyu.ch.
+### 2. Release Croc 0.1
+
+The website's download button and changelog page read the latest GitHub release, so release before deploying the site.
+
+1. Optional but worth it: run `./build.sh`, then convert a **real iPhone HDR video** and a **long video** (10+ minutes)
+   with each format. So far it has only been tested with generated clips (see "Testing done" below).
+2. In `CHANGELOG.md`, change `## 0.1 (unreleased)` to `## 0.1 (2026-10-DD)`, then commit and push. `release.sh` needs
+   a clean tree.
+3. `./release.sh 0.1` (needs the GitHub CLI logged in as an account that can push to `kimiyuch`). It builds the app
+   (downloading ffmpeg the first time, see below), makes `build/Croc.dmg` (about 32 MB), bumps `Info.plist`, commits
+   "Release 0.1", tags `v0.1`, pushes and creates the GitHub release with `Croc.dmg` and `CHANGELOG.md` attached.
+   `PUBLISH=0 ./release.sh 0.1` does a dry run.
+4. Check that `https://github.com/kimiyuch/croc.app/releases/latest/download/Croc.dmg` downloads.
+
+### 3. Deploy croc.kimiyu.ch
+
+`croc.web/deploy.sh` is the same as joey.web's apart from the name: `HOST=pumutuxu@pumutuxu.myhostpoint.ch`,
+`DEST=/home/pumutuxu/www/croc.kimiyu.ch`.
+
+Before the first deploy, check the server once (deploy.sh never touches these):
+
+```sh
+ssh pumutuxu@pumutuxu.myhostpoint.ch 'cd ~/www/croc.kimiyu.ch && ls -A; head -1 public/.htaccess; grep -E "^APP_(URL|ENV|DEBUG)=" .env'
+```
+
+- `.env` should have `APP_URL=https://croc.kimiyu.ch`, `APP_ENV=production`, `APP_DEBUG=false` and an `APP_KEY`.
+  Like the other sites, use file sessions and cache (`SESSION_DRIVER=file`, `CACHE_STORE=file`).
+- `public/.htaccess` should be Laravel's, with the PHP version as its first line (Joey, Bilby and Amor use
+  `Use php-fpm php83`). Copy the one from wombat.kimiyu.ch if it's missing.
+
+Then, from `croc.web`:
+
+```sh
+./deploy.sh    # runs the tests, exports HEAD, composer install --no-dev, rsync, artisan optimize
+```
+
+Check: `https://croc.kimiyu.ch`, `/changelog` (shows 0.1 once released), `/legal`, `/download` (redirects to the DMG)
+and the link preview (`/images/og.png`). Download counts: `./downloads.sh`.
+
+### 4. Deploy kimiyu.ch
+
+Only after croc.kimiyu.ch is live, so the new card never points at an empty site. From `kimiyu.web`: `./deploy.sh`.
+Check that the apps section shows five cards ("Five critters, five small jobs") and that `/legal` links to Croc's legal
+notice.
+
+### 5. Small leftovers
+
+- **GitHub bio** of `kimiyuch` still says "Joey, Bilby and Wallaby". Suggested:
+  `Small, calm apps, each with a critter inside. Joey, Bilby, Wallaby, Wombat and Croc. Made with Claude.`
+  (`gh api -X PATCH user -f bio='…'` as kimiyuch, or by hand on github.com.)
+- Optionally add croc.kimiyu.ch to Google Search Console, like the others.
+
+## What Croc is
+
+A small, native macOS app (SwiftUI, macOS 14+, Apple Silicon) that turns MOV and MP4 files into small, fast-starting
+videos for the web, using a bundled ffmpeg. Tagline: *Chew big videos down to size.*
+
+- Drop videos or folders on the window or the Dock icon (also File → Add Videos…, ⌘O). They're converted one at a
+  time, and each row shows progress, then "412 MB → 9.8 MB, 98% smaller".
+- **Formats:**
+  - **Web MP4:** libx264 `-preset slow`, AAC 128k stereo, `+faststart`.
+  - **WebM:** libvpx-vp9 with `-b:v 0`, Opus 96k.
+  - **Silent loop:** H.264 with no audio.
+- **Size:** 720p, 1080p, 1440p or the original. The limit applies to the short side, with the matching 16:9 length
+  on the long side. Videos are never upscaled and both sides stay even.
+- **Quality:** Smaller, Balanced or Better (x264 CRF 26/23/20, VP9 CRF 36/32/28).
+- **HDR** (HLG or PQ, detected with AVFoundation) is tone-mapped to SDR with zscale + `tonemap=hable`.
+- **Colour tags:** output is tagged bt709 through the `setparams` filter. ffmpeg 9 ignores `-color_trc` and friends as
+  output options and takes the tags from the frames.
+- **Output:** `clip.mov` → `clip.web.mp4`, `clip.webm` or `clip.loop.mp4`, next to the original or in a chosen
+  folder. Croc never overwrites a file: it adds `" 2"`, `" 3"` and so on to the name instead.
+  - ffmpeg first writes to a hidden `.clip.croc-xxxx.mp4`. Croc renames it when ffmpeg finishes and deletes it when
+    the run is stopped or fails.
+- **Stopping:** Stop (⌘.) or a row's ✕ terminates ffmpeg, and the row shows "Stopped" with a retry button. Quitting
+  during a conversion asks first. The Mac doesn't idle-sleep while a conversion runs.
+- **Settings and network:** format, size, quality and output folder are remembered in UserDefaults
+  (`ch.kimiyu.Croc`). There's no network access, no analytics and no updater yet.
+
+## How it's built
+
+- Same setup as Wombat: SwiftPM (no Xcode project), `build.sh` (ad hoc signing), `make-dmg.sh`, `release.sh`,
+  `release.env`, Figtree, GPLv3.
+- **ffmpeg:**
+  - `scripts/fetch-ffmpeg.sh` downloads Martin Riedl's static arm64 **ffmpeg 9.0.2** (GPLv3; includes libx264,
+    libvpx, libopus, SVT-AV1 and VideoToolbox) into `Resources/bin/`.
+  - It's pinned by SHA-256, and `Resources/bin/` is git-ignored. `build.sh` calls the script, so the first build
+    needs internet.
+  - `build.sh` copies the binary to `Croc.app/Contents/MacOS/ffmpeg` and signs it ad hoc.
+  - To update it, change `VERSION`, `BUILD` and `SHA256` in the script.
+- **No ffprobe:** length, size, rotation, HDR and audio are read with AVFoundation (`VideoInfo` in `Encoder.swift`).
+  That saves 66 MB, and the app is 64 MB.
 - **Files:**
-  - `Sources/Croc/CrocApp.swift`: the app and main window
-  - `Sources/Croc/Views.swift`: drop zone, queue rows with progress, preset picker
-  - `Sources/Croc/Theme.swift`: colours, Figtree, button styles
-  - `Sources/Croc/Presets.swift`: the presets as ffmpeg argument lists
-  - `Sources/Croc/Encoder.swift`: runs ffprobe (duration, size) and ffmpeg via `Process`, parses `-progress pipe:1`
-    (`out_time_us` / duration) and supports cancelling
-  - `scripts/fetch-ffmpeg.sh`: downloads static arm64 `ffmpeg` + `ffprobe` into `Resources/bin` (git-ignored),
-    like Joey's `fetch-sparkle.sh`. Decided: martin-riedl.de static arm64 ffmpeg 9.0.2 (GPLv3, has libx264,
-    libvpx, libopus, SVT-AV1, VideoToolbox), pinned by SHA-256. No ffprobe: AVFoundation reads length, size and HDR.
-    ffmpeg goes into `Contents/MacOS/ffmpeg`; the app is 64 MB.
-  - `scripts/make-icon.mjs`: the icon, rendered with headless Chrome like Wombat's
 
-### Features for 0.1
+  | File | What it does |
+  |---|---|
+  | `CrocApp.swift` | The app, menus, open panels, Dock drops, quit confirmation |
+  | `Views.swift` | The window |
+  | `Converter.swift` | The queue: `Job`, output names |
+  | `Presets.swift` | Formats, sizes, quality and the ffmpeg arguments (`Command`) |
+  | `Encoder.swift` | `VideoInfo`, and running ffmpeg with `-progress pipe:1` |
+  | `Theme.swift` | Palette, Figtree, pill buttons |
 
-- Drop `.mov` / `.mp4` (or open them) → queue; one at a time, each row with a progress bar, before → after size.
-- Presets:
-  - **Web MP4**: H.264 CRF 23, `-preset slow`, `yuv420p`, AAC 128k, `-movflags +faststart`
-  - **WebM**: VP9 CRF 32 `-b:v 0 -row-mt 1`, Opus 96k
-  - **Silent loop**: like Web MP4, `-an` (for hero/background videos)
-- Max size: 1080p / 720p / original (`scale='min(W,iw)':-2`, never upscales).
-- Output next to the original as `name.web.mp4` / `name.webm` (never overwrite), or a chosen folder; "Show in Finder".
-- Nothing leaves the Mac, no network.
-- Later: poster frame export (JPG/WebP of the first frame), AV1, hardware encoding (`h264_videotoolbox`) as a
-  "fast" toggle, Sparkle updates like Joey.
+- **Icon:** `node scripts/make-icon.mjs` (needs Google Chrome) draws a green croc with yellow slit eyes and teeth along
+  its snout. Its paws are on a clapperboard with the kimiyu bear chalked on the board, on a dark green tile.
+  - It writes `artwork/`, `Resources/icon.png` and `docs/icon.png`.
+  - The site images (`croc.web/public/images/croc.png`, `croc.webp` 384 px, `favicon.png` 64 px,
+    `public/apple-touch-icon.png` 256 px) and `kimiyu.web/public/images/croc.webp` (256 px) are resized from it with
+    ImageMagick + cwebp.
+- **Colour:** `billabong`, the croc's green (50 `#eff8f0` … 500 `#3a8d4b`, 600 `#2c733b`, 950 `#0c2113`).
+  - It's the same scale in `Theme.swift`, `croc.web/resources/css/app.css` and kimiyu.web's `app.css` (50/700/950
+    only).
+  - It was olive at first; Marcel didn't like it, so it became the croc's green.
 
-### The icon
+## croc.web
 
-Drawn 2026-10-19, first version (may want another pass): a croc peeking over the app's object on a rounded `billabong` gradient tile, like the others: eyes and snout just
-above a film clapperboard, with the kimiyu bear debossed on the clapper (the way Wombat has it on the drive).
-Copy `artwork/kimiyu-bear.svg` from kimiyu.web. Outputs `artwork/icon.svg/png`, `Resources/icon.png`, `docs/icon.png`.
+A copy of wombat.web (Laravel 13, Tailwind 4, Inter + Figtree, heroicons), with a Croc window mock in the hero
+(`components/app-window.blade.php`).
 
-### croc.web
+- **Sections:**
+  - Formats: dark, with a `<video>` snippet for each format.
+  - Features
+  - Under the hood
+  - Install: four steps, including "Open Anyway", since the app isn't notarized.
+- **Pages:** `/changelog` reads the release's `CHANGELOG.md`, `/legal` has a "Your videos" section and the FFmpeg
+  trademark, and `/download` counts clicks.
+- **Assets:** `resources/js/app.js` is empty on purpose (Wombat's usage-bar script isn't needed). The OG image comes
+  from `/og-image`.
+- **OG image gotcha:** `scripts/og-image.sh` uses `https://croc.web.test/og-image`. If headless Chrome can't resolve
+  `.test`, add `--host-resolver-rules="MAP croc.web.test 127.0.0.1"`.
 
-Copy `wombat.web`: Laravel 13, Tailwind 4 (`billabong` palette under `@theme`), Inter + Figtree, heroicons,
-`home` / `changelog` / `legal`, an OG image (`scripts/og-image.sh`), `/download` with a counter (`downloads.sh`), and
-`deploy.sh` to `~/www/croc.kimiyu.ch` on `pumutuxu@pumutuxu.myhostpoint.ch`. `config/croc.php` points at
-`releases/latest/download/Croc.dmg` and `CHANGELOG.md`. A Croc window mock in the hero
-(`components/app-window.blade.php`). Build the page with the `/ui` skill.
+## Testing done (2026-10-19, other Mac)
 
-### kimiyu.web
+- **Clips used:** a 4K ProRes MOV (170 MB), a portrait 1080×1920 HLG HEVC MOV with sound, and a 720p MP4 without
+  sound. All three were generated with ffmpeg.
+- **Formats:** all three work. The outputs have the right size and orientation, bt709 tags, faststart (`moov` at the
+  front), no audio for Silent loop, and Opus in WebM.
+- **Stop:** no partial file is left behind, no ffmpeg keeps running, and the row says "Stopped".
+- **Names:** the `" 2"` suffix works, and WebM gets the right extension.
+- **Bugs found and fixed:**
+  - a crash on SDR videos (`CFEqual` with nil)
+  - missing colour tags
+  - `clip.webm.` (a trailing dot) instead of `clip.webm`
+  - the settings row overflowing the default window width
+- **Not tested yet:**
+  - real iPhone HDR footage (the tone-mapping was only checked on a test pattern)
+  - long videos
+  - Intel Macs (not supported: the ffmpeg binary is arm64 only)
+  - files with several audio tracks (Croc takes the first)
+  - a second Mac (Gatekeeper's "Open Anyway" flow)
 
-Add a Croc card to `config/kimiyu.php` (icon `images/croc.webp`, colour `billabong`) and the `billabong` colours
-to its `app.css`; update the GitHub bio ("Joey, Bilby and Wallaby") while at it.
+## Ideas for later
 
-## Order
+- A poster frame (the first frame as WebP/JPG) next to each video
+- AV1 (SVT-AV1 is already in the bundled ffmpeg)
+- A "fast" toggle that uses `h264_videotoolbox`
+- Trimming
+- Sparkle updates like Joey's
+- Notarization: it needs an Apple Developer ID
+- The icon is a first version and could use another pass
 
-1. ~~Create the two GitHub repos and clone kimiyu.web into Webroot.~~ Done 2026-10-19 (Marcel created the repos).
-2. ~~Build croc.app: encoder + presets first (test from the command line), then the UI, then the icon.~~ Done 2026-10-19.
-   Tested with a 4K ProRes MOV, a portrait HLG HEVC MOV and a silent MP4 (all three formats, stop, " 2" names).
-   Still to try with real iPhone HDR footage and a long video.
-3. Release 0.1: set the date in `CHANGELOG.md` first (`make-dmg.sh`, `release.sh 0.1`).
-4. ~~Build croc.web~~ Done 2026-10-19, served in Herd at `https://croc.web.test`, tests pass. Still to do: set up
-   croc.kimiyu.ch on Hostpoint (folder `~/www/croc.kimiyu.ch`, PHP 8.3 in `public/.htaccess`, `.env` with
-   `APP_URL=https://croc.kimiyu.ch`, `APP_ENV=production`, `APP_DEBUG=false`), then `./deploy.sh`.
-5. ~~Add the card to kimiyu.ch~~ Done 2026-10-19 (commit e4d91d9 in kimiyu.web, with the new OG image). Still to do:
-   `./deploy.sh` in kimiyu.web once croc.kimiyu.ch is live, and update the GitHub bio of `kimiyuch`.
+## Gotchas
+
+- `gh` on the other Mac had two accounts; `kimiyuch` was left active. Commits in these repos are authored as
+  `kimiyu <340246951+kimiyuch@users.noreply.github.com>` (set per repo with `git config user.name/user.email`).
+- In zsh, a glob with no matches (`rm *.webm` when there are none) aborts the whole command line.
+- Quokka is reserved for kimiyu.ch; don't use it for an app.
