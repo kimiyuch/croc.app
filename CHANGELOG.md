@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4 (unreleased)
+## 0.4 (2026-10-19)
 
 - **Animated GIFs.** Drop a GIF on Croc and get an MP4 or WebM that's usually a fraction of its size. It plays with
   the same timing browsers give the GIF, and transparent parts become white.
