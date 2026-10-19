@@ -1,6 +1,6 @@
 # Croc: a video converter for the web (to build)
 
-Written 2026-10-19 for whoever opens this folder next. Last updated 2026-10-19: the app works (steps 1–2 done), not released yet.
+Written 2026-10-19 for whoever opens this folder next. Last updated 2026-10-19: app, website and hub card are built and pushed; nothing is released or deployed yet (steps 3–5).
 
 ## What it is
 
@@ -13,7 +13,7 @@ Croc is the saltwater crocodile: heavy, and the chomp fits an app that cuts file
 | | |
 |---|---|
 | Repos | `kimiyuch/croc.app` (native app) + `kimiyuch/croc.web` (site), per the `.app` / `.web` suffix rule |
-| Local folders | `Webroot/croc.app`, `Webroot/croc.web` (created 2026-10-19; croc.web still empty) |
+| Local folders | `Webroot/croc.app`, `Webroot/croc.web`, plus a clone of `Webroot/kimiyu.web` (all 2026-10-19) |
 | Site | `https://croc.kimiyu.ch` on Hostpoint, `https://croc.web.test` in Herd |
 | Bundle ID | `ch.kimiyu.Croc` |
 | Colour | `billabong`: murky olive-green, set apart from Joey's `gum` (green) and Bilby's `chip` (teal) |
@@ -81,5 +81,8 @@ to its `app.css`; update the GitHub bio ("Joey, Bilby and Wallaby") while at it.
    Tested with a 4K ProRes MOV, a portrait HLG HEVC MOV and a silent MP4 (all three formats, stop, " 2" names).
    Still to try with real iPhone HDR footage and a long video.
 3. Release 0.1: set the date in `CHANGELOG.md` first (`make-dmg.sh`, `release.sh 0.1`).
-4. Build croc.web, set up the subdomain on Hostpoint (PHP 8.3 in `public/.htaccess`), deploy.
-5. Add the card to kimiyu.ch and deploy it.
+4. ~~Build croc.web~~ Done 2026-10-19, served in Herd at `https://croc.web.test`, tests pass. Still to do: set up
+   croc.kimiyu.ch on Hostpoint (folder `~/www/croc.kimiyu.ch`, PHP 8.3 in `public/.htaccess`, `.env` with
+   `APP_URL=https://croc.kimiyu.ch`, `APP_ENV=production`, `APP_DEBUG=false`), then `./deploy.sh`.
+5. ~~Add the card to kimiyu.ch~~ Done 2026-10-19 (commit e4d91d9 in kimiyu.web, with the new OG image). Still to do:
+   `./deploy.sh` in kimiyu.web once croc.kimiyu.ch is live, and update the GitHub bio of `kimiyuch`.
