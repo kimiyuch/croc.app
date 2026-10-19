@@ -1,5 +1,5 @@
 // Draws the Croc icon: a crocodile peeking over a film clapperboard with the kimiyu bear chalked on its board,
-// on a billabong-olive square. Writes the SVGs to artwork/ and renders the PNGs with headless Chrome
+// on a billabong-green square. Writes the SVGs to artwork/ and renders the PNGs with headless Chrome
 // (no npm packages needed), then copies the icon to Resources/ (build.sh) and docs/ (README).
 // Usage: node scripts/make-icon.mjs
 import { execFileSync } from "node:child_process";
@@ -25,14 +25,14 @@ const bear = bearSource
   .replace(/fill="(#[0-9a-f]{6})"/gi, (match, hex) => `fill="${chalk[hex.toLowerCase()] ?? "#606369"}"`);
 
 const defs = `
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9aa955"/><stop offset=".55" stop-color="#4d5826"/><stop offset="1" stop-color="#1a1e0e"/></linearGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c733b"/><stop offset=".55" stop-color="#1c3d25"/><stop offset="1" stop-color="#0c2113"/></linearGradient>
     <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
     <linearGradient id="skin" gradientUnits="userSpaceOnUse" x1="0" y1="150" x2="0" y2="520"><stop offset="0" stop-color="#74c77a"/><stop offset="1" stop-color="#2f8448"/></linearGradient>
     <linearGradient id="snout" gradientUnits="userSpaceOnUse" x1="0" y1="318" x2="0" y2="520"><stop offset="0" stop-color="#8fd88f"/><stop offset="1" stop-color="#55a865"/></linearGradient>
     <linearGradient id="board" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3d42"/><stop offset="1" stop-color="#1f2124"/></linearGradient>
     <linearGradient id="stick" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34373c"/><stop offset="1" stop-color="#1c1e21"/></linearGradient>
-    <filter id="drop" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#0c0f05" flood-opacity=".4"/></filter>
-    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#0c0f05" flood-opacity=".3"/></filter>
+    <filter id="drop" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#04100a" flood-opacity=".4"/></filter>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#04100a" flood-opacity=".3"/></filter>
     <filter id="chalk" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="-2" stdDeviation="1" flood-color="#000" flood-opacity=".5"/></filter>
     <filter id="icon" x="-10%" y="-10%" width="120%" height="125%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000" flood-opacity=".3"/></filter>
     <clipPath id="squircle"><rect x="100" y="100" width="824" height="824" rx="185"/></clipPath>
@@ -103,7 +103,7 @@ const svg = (viewBox, body) =>
 
 // Rounded square on transparent with a shadow, on the macOS icon grid like the siblings': the app icon, favicon, README.
 const rounded = svg("0 0 1024 1024", `
-  <rect x="100" y="100" width="824" height="824" rx="185" fill="#2f351b" filter="url(#icon)"/>
+  <rect x="100" y="100" width="824" height="824" rx="185" fill="#1c3d25" filter="url(#icon)"/>
   <g clip-path="url(#squircle)"><g transform="translate(100 100) scale(0.8047)">${background}${art}</g></g>`);
 // Full-bleed square for the apple-touch-icon (iOS rounds the corners itself).
 const square = svg("0 0 1024 1024", background + art);

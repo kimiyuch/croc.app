@@ -2,7 +2,7 @@ import SwiftUI
 import AppKit
 import CoreText
 
-// The look of croc.kimiyu.ch: the billabong olive of the icon, Figtree headings, white cards with a thin ring.
+// The look of croc.kimiyu.ch: the croc green of the icon, Figtree headings, white cards with a thin ring.
 // Dark mode follows the website's dark sections (billabong-950 with white/5 cards).
 
 extension Color {
@@ -23,22 +23,22 @@ extension Color {
 }
 
 enum Billabong {
-    static let c50 = Color(hex: 0xf6f7ee)
-    static let c100 = Color(hex: 0xeaedd6)
-    static let c200 = Color(hex: 0xd5dcae)
-    static let c300 = Color(hex: 0xb8c47d)
-    static let c400 = Color(hex: 0x9aa955)
-    static let c500 = Color(hex: 0x7d8c3b)
-    static let c600 = Color(hex: 0x62702d)
-    static let c700 = Color(hex: 0x4d5826)
-    static let c800 = Color(hex: 0x3f4723)
-    static let c900 = Color(hex: 0x2f351b)
-    static let c950 = Color(hex: 0x1a1e0e)
+    static let c50 = Color(hex: 0xeff8f0)
+    static let c100 = Color(hex: 0xd9eedc)
+    static let c200 = Color(hex: 0xb5ddbb)
+    static let c300 = Color(hex: 0x86c590)
+    static let c400 = Color(hex: 0x5aa968)
+    static let c500 = Color(hex: 0x3a8d4b)
+    static let c600 = Color(hex: 0x2c733b)
+    static let c700 = Color(hex: 0x255c31)
+    static let c800 = Color(hex: 0x214a2b)
+    static let c900 = Color(hex: 0x1c3d25)
+    static let c950 = Color(hex: 0x0c2113)
 }
 
 enum Theme {
-    static let pageTop = Color.adaptive(light: Billabong.c50, dark: Color(hex: 0x181b0d))
-    static let page = Color.adaptive(light: .white, dark: Color(hex: 0x13160a))
+    static let pageTop = Color.adaptive(light: Billabong.c50, dark: Color(hex: 0x0f1d13))
+    static let page = Color.adaptive(light: .white, dark: Color(hex: 0x0b160e))
     static let card = Color.adaptive(light: .white, dark: .white.opacity(0.05))
     static let ring = Color.adaptive(light: Billabong.c950.opacity(0.1), dark: .white.opacity(0.1))
     static let divider = Color.adaptive(light: Color(hex: 0x0a0a0a, opacity: 0.05), dark: .white.opacity(0.08))

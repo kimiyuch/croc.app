@@ -16,7 +16,7 @@ Croc is the saltwater crocodile: heavy, and the chomp fits an app that cuts file
 | Local folders | `Webroot/croc.app`, `Webroot/croc.web`, plus a clone of `Webroot/kimiyu.web` (all 2026-10-19) |
 | Site | `https://croc.kimiyu.ch` on Hostpoint, `https://croc.web.test` in Herd |
 | Bundle ID | `ch.kimiyu.Croc` |
-| Colour | `billabong`: murky olive-green, set apart from Joey's `gum` (green) and Bilby's `chip` (teal) |
+| Colour | `billabong`: the croc's green (changed from olive on 2026-10-19 at Marcel's request) |
 
 ## Model it on Wombat
 
