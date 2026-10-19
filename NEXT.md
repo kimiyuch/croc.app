@@ -6,12 +6,12 @@ Written 2026-10-19 at the end of the first Croc session, for the agent on Marcel
 ## Where things stand
 
 Croc (the Mac app), croc.kimiyu.ch (its website) and the Croc card on kimiyu.ch are **built, tested and pushed**.
-**Nothing is released or deployed yet.** The other Mac couldn't deploy: Hostpoint rejects its SSH keys. That's why the
+**Nothing is deployed yet.** The other Mac couldn't deploy: Hostpoint rejects its SSH keys. That's why the
 rest happens on this machine.
 
 | Repo | State | Last commit (2026-10-19) |
 |---|---|---|
-| `kimiyuch/croc.app` | App done, version 0.1 not released | this file |
+| `kimiyuch/croc.app` | 0.1 and 0.2 released (2026-10-19); Sparkle updates added for 0.3, not released yet | |
 | `kimiyuch/croc.web` | Site done, `public/build` committed, not deployed | `f8417f1` Hero heading on two lines |
 | `kimiyuch/kimiyu.web` | Croc card + new OG image committed, not deployed | `e8a573e` Croc's colour: the croc's green instead of olive |
 
@@ -104,7 +104,8 @@ videos for the web, using a bundled ffmpeg. Tagline: *Chew big videos down to si
 - **Stopping:** Stop (⌘.) or a row's ✕ terminates ffmpeg, and the row shows "Stopped" with a retry button. Quitting
   during a conversion asks first. The Mac doesn't idle-sleep while a conversion runs.
 - **Settings and network:** format, size, quality and output folder are remembered in UserDefaults
-  (`ch.kimiyu.Croc`). There's no network access, no analytics and no updater yet.
+  (`ch.kimiyu.Croc`). There's no analytics. The only network access is Sparkle's update check
+  (from 0.3; automatic once a day by default, can be turned off in the Croc menu).
 
 ## How it's built
 
@@ -117,6 +118,14 @@ videos for the web, using a bundled ffmpeg. Tagline: *Chew big videos down to si
     needs internet.
   - `build.sh` copies the binary to `Croc.app/Contents/MacOS/ffmpeg` and signs it ad hoc.
   - To update it, change `VERSION`, `BUILD` and `SHA256` in the script.
+- **Sparkle** 2.10 (like Joey): `scripts/fetch-sparkle.sh` fetches it into `vendor/` (git-ignored, SHA-256 pinned),
+  `build.sh` copies the framework into `Contents/Frameworks` and signs it inside out, `release.sh` uploads
+  `Croc-<version>.zip` and `appcast.xml` next to the DMG.
+  - The EdDSA signing key is in the Keychain of Marcel's Mac (account `croc`, created 2026-10-19). It has to be
+    exported (`generate_keys --account croc -x …`) and imported on any other Mac that releases. If it's lost, existing
+    installs can't be updated any more.
+  - 0.1 and 0.2 have no updater; people on those versions have to download 0.3 by hand once.
+  - Tested 2026-10-19 with a local feed: 0.2 found 0.3, downloaded, installed and relaunched as 0.3.
 - **No ffprobe:** length, size, rotation, HDR and audio are read with AVFoundation (`VideoInfo` in `Encoder.swift`).
   That saves 66 MB, and the app is 64 MB.
 - **Files:**
@@ -184,7 +193,6 @@ A copy of wombat.web (Laravel 13, Tailwind 4, Inter + Figtree, heroicons), with 
 - AV1 (SVT-AV1 is already in the bundled ffmpeg)
 - A "fast" toggle that uses `h264_videotoolbox`
 - Trimming
-- Sparkle updates like Joey's
 - Notarization: it needs an Apple Developer ID
 - The icon is a first version and could use another pass
 

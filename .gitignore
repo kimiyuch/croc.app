@@ -3,8 +3,12 @@
 .swiftpm/
 build/
 
-# ffmpeg, fetched by scripts/fetch-ffmpeg.sh
+# ffmpeg and Sparkle, fetched by scripts/fetch-ffmpeg.sh and scripts/fetch-sparkle.sh
 /Resources/bin/
+/vendor/
+
+# Sparkle private signing key, if exported from the Keychain (never commit)
+/sparkle-private-key.txt
 
 # Private session notes (not for the public repo)
 /SESSION.md

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3 (unreleased)
+
+- **Updates.** Croc now looks for new versions once a day and offers to install them (Croc → Check for Updates…). That
+  check is the only time it connects to the internet; turn it off with Croc → Check for Updates Automatically.
+  Coming from 0.1 or 0.2, download this version by hand once; after that it updates itself.
+
 ## 0.2 (2026-10-19)
 
 - A lighter green, like croc.kimiyu.ch: the icon's background and, in light mode, the band at the top of the window.

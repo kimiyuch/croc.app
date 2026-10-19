@@ -13,6 +13,12 @@ struct CrocApp: App {
         .windowStyle(.hiddenTitleBar)
         .defaultSize(width: 920, height: 760)
         .commands {
+            CommandGroup(after: .appInfo) {
+                @Bindable var updates = appDelegate.updates
+                Button("Check for Updates…") { updates.check() }
+                    .disabled(!updates.canCheck)
+                Toggle("Check for Updates Automatically", isOn: $updates.checksAutomatically)
+            }
             CommandGroup(replacing: .newItem) {
                 Button("Add Videos…") { addVideos(to: appDelegate.converter) }
                     .keyboardShortcut("o")
@@ -36,6 +42,7 @@ struct CrocApp: App {
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     let converter = Converter()
+    let updates = Updates()
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
 
