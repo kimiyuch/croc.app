@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3 (unreleased)
+## 0.3 (2026-10-19)
 
 - **Updates.** Croc now looks for new versions once a day and offers to install them (Croc → Check for Updates…). That
   check is the only time it connects to the internet; turn it off with Croc → Check for Updates Automatically.
