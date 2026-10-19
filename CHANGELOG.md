@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1 (unreleased)
+## 0.1 (2026-10-19)
 
 - **First release.** Drop MOV and MP4 files on Croc and get small copies for the web: Web MP4 (H.264), WebM (VP9)
   or a silent loop for background videos.
