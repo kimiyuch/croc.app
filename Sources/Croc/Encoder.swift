@@ -1,6 +1,8 @@
 import Foundation
 import AVFoundation
 import CoreMedia
+import ImageIO
+import UniformTypeIdentifiers
 
 /// What Croc needs to know about a video before converting it, read with AVFoundation (no ffprobe needed).
 struct VideoInfo {
@@ -10,8 +12,11 @@ struct VideoInfo {
     var height: Int
     var isHDR: Bool
     var hasAudio: Bool
+    /// An animated GIF: no sound, and frames that may be transparent.
+    var isGIF = false
 
     static func read(_ url: URL) async throws -> VideoInfo {
+        if UTType(filenameExtension: url.pathExtension)?.conforms(to: .gif) == true { return try readGIF(url) }
         let asset = AVURLAsset(url: url)
         let duration = try await asset.load(.duration).seconds
         guard let track = try await asset.loadTracks(withMediaType: .video).first else {
@@ -30,6 +35,22 @@ struct VideoInfo {
         return VideoInfo(duration: duration.isFinite ? duration : 0,
                          width: Int(abs(shown.width).rounded()), height: Int(abs(shown.height).rounded()),
                          isHDR: isHDR, hasAudio: !audio.isEmpty)
+    }
+
+    /// AVFoundation can't open GIFs, so their size and length come from ImageIO.
+    private static func readGIF(_ url: URL) throws -> VideoInfo {
+        guard let source = CGImageSourceCreateWithURL(url as CFURL, nil), CGImageSourceGetCount(source) > 0,
+              let first = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
+              let width = first[kCGImagePropertyPixelWidth] as? Int, let height = first[kCGImagePropertyPixelHeight] as? Int
+        else { throw CrocError.noVideo }
+        // Like browsers and ffmpeg's GIF reader: a delay under 20 ms counts as 100 ms.
+        let duration = (0..<CGImageSourceGetCount(source)).reduce(0.0) { sum, index in
+            let frame = CGImageSourceCopyPropertiesAtIndex(source, index, nil) as? [CFString: Any]
+            let gif = frame?[kCGImagePropertyGIFDictionary] as? [CFString: Any]
+            let delay = (gif?[kCGImagePropertyGIFUnclampedDelayTime] ?? gif?[kCGImagePropertyGIFDelayTime]) as? Double ?? 0
+            return sum + (delay < 0.02 ? 0.1 : delay)
+        }
+        return VideoInfo(duration: duration, width: width, height: height, isHDR: false, hasAudio: false, isGIF: true)
     }
 }
 

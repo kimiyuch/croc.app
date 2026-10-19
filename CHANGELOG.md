@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4 (unreleased)
+
+- **Animated GIFs.** Drop a GIF on Croc and get an MP4 or WebM that's usually a fraction of its size. It plays with
+  the same timing browsers give the GIF, and transparent parts become white.
+- A GIF or video with an odd width or height is now trimmed by a pixel instead of being stretched by one.
+
 ## 0.3 (2026-10-19)
 
 - **Updates.** Croc now looks for new versions once a day and offers to install them (Croc → Check for Updates…). That

@@ -246,7 +246,7 @@ struct DropZone: View {
                 .tracking(-0.5)
                 .foregroundStyle(Theme.ink)
                 .padding(.top, 18)
-            Text("MOV and MP4 from your phone, camera or screen recordings. Croc makes small copies for the web and leaves the originals alone.")
+            Text("MOV and MP4 from your phone, camera or screen recordings, and animated GIFs. Croc makes small copies for the web and leaves the originals alone.")
                 .font(.system(size: 14))
                 .lineSpacing(2)
                 .multilineTextAlignment(.center)

@@ -95,8 +95,11 @@ enum Command {
             let short = Double(min(width, height)), long = Double(Swift.max(width, height))
             scale = min(1, Double(max.rawValue) / short, Double(max.rawValue) * 16 / 9 / long)
         }
-        func even(_ value: Double) -> Int { Swift.max(2, Int((value / 2).rounded()) * 2) }
-        return (even(Double(width) * scale), even(Double(height) * scale))
+        // Rounded to even, but never past the original (a 321 px wide GIF becomes 320, not 322).
+        func even(_ value: Double, _ original: Int) -> Int {
+            Swift.max(2, Swift.min(Int((value / 2).rounded()) * 2, original / 2 * 2))
+        }
+        return (even(Double(width) * scale, width), even(Double(height) * scale, height))
     }
 
     static func arguments(input: URL, output: URL, video: VideoInfo, settings: Settings) -> [String] {
@@ -104,10 +107,18 @@ enum Command {
 
         // iPhone footage is often HDR (HLG or PQ); turn it into normal SDR so it doesn't look grey in the browser.
         var filters: [String] = []
+        // Video has no transparency, so a GIF's see-through pixels would get whatever colour hides behind them: put it on white.
+        // Frames shorter than 20 ms are shown for 100 ms by browsers; ffmpeg's GIF reader doesn't, so retime them.
+        if video.isGIF {
+            filters.append("setpts='if(eq(N,0),0,PREV_OUTPTS+if(lt(PTS-PREV_INPTS,0.02/TB),0.1/TB,PTS-PREV_INPTS))'")
+            filters.append("format=rgba,split[gif][bg];[bg]drawbox=c=white:t=fill[white];[white][gif]overlay=format=auto")
+        }
         if video.isHDR {
             filters.append("zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv")
         }
         filters.append("scale=\(target.width):\(target.height):flags=lanczos")
+        // GIF pixels are square; without this, trimming an odd pixel leaves a slightly non-square pixel aspect.
+        if video.isGIF { filters.append("setsar=1") }
         // Tag the frames as normal HD video; ffmpeg takes the colour tags from the frames, not from -color_trc.
         filters.append("format=yuv420p,setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709:range=tv")
 

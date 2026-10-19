@@ -58,7 +58,7 @@ final class Converter {
     private(set) var isRunning = false
     private var task: Task<Void, Never>?
 
-    static let types: [UTType] = [.quickTimeMovie, .mpeg4Movie]
+    static let types: [UTType] = [.quickTimeMovie, .mpeg4Movie, .gif]
 
     init() {
         let defaults = UserDefaults.standard

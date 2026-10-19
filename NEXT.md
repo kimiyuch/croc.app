@@ -82,8 +82,8 @@ notice.
 
 ## What Croc is
 
-A small, native macOS app (SwiftUI, macOS 14+, Apple Silicon) that turns MOV and MP4 files into small, fast-starting
-videos for the web, using a bundled ffmpeg. Tagline: *Chew big videos down to size.*
+A small, native macOS app (SwiftUI, macOS 14+, Apple Silicon) that turns MOV and MP4 files and animated GIFs into small,
+fast-starting videos for the web, using a bundled ffmpeg. Tagline: *Chew big videos down to size.*
 
 - Drop videos or folders on the window or the Dock icon (also File → Add Videos…, ⌘O). They're converted one at a
   time, and each row shows progress, then "412 MB → 9.8 MB, 98% smaller".
@@ -124,6 +124,11 @@ videos for the web, using a bundled ffmpeg. Tagline: *Chew big videos down to si
   - The EdDSA signing key is in the Keychain of Marcel's Mac (account `croc`, created 2026-10-19). It has to be
     exported (`generate_keys --account croc -x …`) and imported on any other Mac that releases. If it's lost, existing
     installs can't be updated any more.
+- **GIFs** (from 0.4): AVFoundation can't open them, so `VideoInfo.readGIF` reads size and length with ImageIO.
+  ffmpeg 9's GIF reader ignores `-min_delay`, so `Command` retimes frames with `setpts`: like browsers, a frame
+  delay under 20 ms plays for 100 ms. Transparent pixels are put on white (video has no alpha), and `setsar=1`
+  keeps the pixels square when an odd size is trimmed to even. Tested with generated GIFs (opaque, transparent,
+  odd size, 20 ms and irregular delays), not yet with real ones from the web.
   - 0.1 and 0.2 have no updater; people on those versions have to download 0.3 by hand once.
   - Tested 2026-10-19 with a local feed: 0.2 found 0.3, downloaded, installed and relaunched as 0.3.
 - **No ffprobe:** length, size, rotation, HDR and audio are read with AVFoundation (`VideoInfo` in `Encoder.swift`).

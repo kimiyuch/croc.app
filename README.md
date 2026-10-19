@@ -18,7 +18,9 @@
 
 ## Features
 
-- Drop MOV and MP4 files (or a folder of them) on the window or the Dock icon; they're converted one after the other
+- Drop MOV and MP4 files or animated GIFs (or a folder of them) on the window or the Dock icon; they're converted one after the
+  other
+- GIFs keep the timing browsers show them with, and transparent parts become white
 - Three formats:
   - **Web MP4**: H.264 + AAC with `faststart`, plays in every browser and starts before it has fully loaded
   - **WebM**: VP9 + Opus, smaller files, slower to make
