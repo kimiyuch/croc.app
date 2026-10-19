@@ -48,15 +48,12 @@ struct ContentView: View {
 
 // MARK: - Hero
 
-/// The band at the top: the app, what's in line and the main button. Light green in light mode, dark in dark mode.
+/// The band at the top: the name, what's in line and the main button. Light green in light mode, dark in dark mode.
 struct Hero: View {
     @Environment(Converter.self) private var converter
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(nsImage: NSApp.applicationIconImage)
-                .resizable()
-                .frame(width: 40, height: 40)
             VStack(alignment: .leading, spacing: 1) {
                 Text("Croc").font(.display(19)).foregroundStyle(Hero.title)
                 Text(summary).font(.callout).foregroundStyle(Hero.subtitle).monospacedDigit()

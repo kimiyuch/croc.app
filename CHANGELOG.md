@@ -5,6 +5,7 @@
 - **Animated GIFs.** Drop a GIF on Croc and get an MP4 or WebM that's usually a fraction of its size. It plays with
   the same timing browsers give the GIF, and transparent parts become white.
 - A GIF or video with an odd width or height is now trimmed by a pixel instead of being stretched by one.
+- The icon is gone from the top of the window; the Dock already shows it.
 
 ## 0.3 (2026-10-19)
 
