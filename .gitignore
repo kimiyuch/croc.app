@@ -1,0 +1,10 @@
+.DS_Store
+.build/
+.swiftpm/
+build/
+
+# ffmpeg, fetched by scripts/fetch-ffmpeg.sh
+/Resources/bin/
+
+# Private session notes (not for the public repo)
+/SESSION.md
